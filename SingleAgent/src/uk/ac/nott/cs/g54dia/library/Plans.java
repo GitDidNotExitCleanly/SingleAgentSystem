@@ -9,18 +9,17 @@ public class Plans {
 		
 		Action result = null;
 		switch (desires.getCurrentDesire()) {
-		case 0:
-			
-			
-			
-			
-			break;
-		case 1:
-			if (beliefs.getCurrentCell() instanceof FuelPump && beliefs.getFuel() < Tanker.MAX_FUEL) {
-				result = new RefuelAction();
-			}
-			else {
-				if (!beliefs.isExplorationFinished()) {
+			case FINSH_TASK:
+				
+				
+				
+				
+				break;
+			case TRAVERSE_MAP:
+				if (beliefs.getCurrentCell() instanceof FuelPump && beliefs.getFuel() < Tanker.MAX_FUEL) {
+					result = new RefuelAction();
+				}
+				else {
 					if (beliefs.isFuelEnoughForReturn()) {
 						result = new MoveTowardsAction(beliefs.getExploringPoints().get(0));
 					}
@@ -28,15 +27,13 @@ public class Plans {
 						result = new MoveTowardsAction(Tanker.FUEL_PUMP_LOCATION);
 					}
 				}
-				else {
-					result = new MoveTowardsAction(Tanker.FUEL_PUMP_LOCATION);
-				}
-			}
-			
-			
-			
-			
-			break;
+				
+				
+				
+				
+				break;
+			default:
+				break;
 		}
 		
 		return result;

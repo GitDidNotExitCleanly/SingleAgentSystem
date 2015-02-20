@@ -4,27 +4,19 @@ import java.util.Stack;
 
 public class Desires {
 	
-	/*
-	 * Mission Code
-	 * 
-	 * 	FinshTask = 0
-	 * 	TraverseMap = 1
-	 * 
-	 */
-	
-	private Stack<Integer> desires;
+	private Stack<Goal> desires;
 	
 	public Desires() {
-		this.desires = new Stack<Integer>();
+		this.desires = new Stack<Goal>();
 	}
 	
 	/**
      * Get Current Goal
-     * @return Current Goal, 0 for FinshTask, 1 for TraverseMap , -1 for no goal.
+     * @return Current Goal.
      */
-	public int getCurrentDesire() {
+	public Goal getCurrentDesire() {
 		if (this.desires.empty()) {
-			return -1;
+			return Goal.NONE;
 		}
 		else {
 			return this.desires.peek();
@@ -32,10 +24,18 @@ public class Desires {
 	}
 	
 	/**
-     * Update Desires
-     * @return Add/Delete a goal to/from the stack, 0 for FinshTask, 1 for TraverseMap, -1 for pop a goal.
+     * Add Desires
+     * @return Add a goal to the stack.
      */
-	public void updateDesires(int desireCode) {
-		this.desires.push(desireCode);
-	} 
+	public void addDesires(Goal goal) {
+		this.desires.push(goal);
+	}
+	
+	/**
+     * Update Desires
+     * @return Remove a goal from the stack.
+     */
+	public Goal popDesires() {
+		return this.desires.pop();
+	}
 }

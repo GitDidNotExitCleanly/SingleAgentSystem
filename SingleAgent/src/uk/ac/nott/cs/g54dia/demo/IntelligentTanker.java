@@ -10,7 +10,7 @@ public class IntelligentTanker extends Tanker {
 	public IntelligentTanker(int environmentSize) {
 		this.beliefs = new Beliefs(environmentSize);
 		this.desires = new Desires();
-		this.desires.updateDesires(1);
+		this.desires.addDesires(Goal.TRAVERSE_MAP);
 		this.plans = new Plans();
 	}
 
@@ -21,20 +21,22 @@ public class IntelligentTanker extends Tanker {
 		this.beliefs.updateBeliefs(view,this.getFuelLevel(),this.getWaterLevel(),this.getPosition(),this.getCurrentCell(view));
 		
 		// update desires
-		if (this.desires.getCurrentDesire() == -1) {
-			this.desires.updateDesires(1);
+		if (this.desires.getCurrentDesire() == Goal.NONE) {
+			this.desires.addDesires(Goal.TRAVERSE_MAP);
 		}
-		/*
-		else {
-			if (this.desires.getCurrentDesire() != 0 && this.beliefs.getTask() != null) {
-				this.desires.updateDesires(0);
+		else if (this.desires.getCurrentDesire() == Goal.FINSH_TASK) {
+			if (this.beliefs.getTask() == null) {
+				this.desires.popDesires();
 			}
 		}
-		*/
+		else {
+			if (this.beliefs.getTask() != null) {
+				//this.desires.addDesires(Goal.FINSH_TASK);
+			}
+		}
 		
 		// select plan
 		return this.plans.execute(this.desires, this.beliefs);
-		
 	}
 
 }

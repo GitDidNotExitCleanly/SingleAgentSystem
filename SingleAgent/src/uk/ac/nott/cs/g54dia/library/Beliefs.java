@@ -2,6 +2,7 @@ package uk.ac.nott.cs.g54dia.library;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 public class Beliefs {
@@ -81,6 +82,7 @@ public class Beliefs {
 			}
 		}
 		
+		this.exploringPoints.add(Tanker.FUEL_PUMP_LOCATION);
 		int numOfPoints = value.length*value.length;
 		int lastXIndex = (value.length-1)/2;
 		int lastYIndex = (value.length-1)/2;
@@ -122,11 +124,13 @@ public class Beliefs {
 	
 	private void geneateOptimalExplorePoints() {
 		
-		////////////////////
-		System.out.println("Generate Optimal Route !");
+		Iterator<Point> it = this.stations.iterator();
+		while (it.hasNext()) {
+			this.optimalExploringPoints.add(it.next());
+		}
 		
 		
-		
+		//////////////////////////////////////////////////////////////////NOT GOOD!
 	}
 	
 	
@@ -163,7 +167,7 @@ public class Beliefs {
 		int dx = this.currentPosition.x - Tanker.FUEL_PUMP_LOCATION.x;
 		int dy = this.currentPosition.y - Tanker.FUEL_PUMP_LOCATION.y;
 		
-		if (this.fuel > Math.max(Math.abs(dx), Math.abs(dy))) {
+		if (this.fuel - Math.max(Math.abs(dx), Math.abs(dy)) > 5) {							// For safety   NOT GOOD
 			return true;
 		}
 		else {
@@ -206,6 +210,15 @@ public class Beliefs {
 	    SOUTHWEST   =   7,
 		STILL		= 	8;
 	public void updateBeliefs(Cell[][] view,int fuel,int water, Point currentPosition, Cell currentCell) {
+		
+		// update task
+		if (this.task != null) {
+			if (this.task.isComplete()) {
+				this.task = null;
+			}
+		}
+		
+		// update stations, wells, task
 		int direction;
 		int dx = currentPosition.x - this.currentPosition.x;
 		int dy = currentPosition.y - this.currentPosition.y;
@@ -436,27 +449,16 @@ public class Beliefs {
 		
 		// if exploration is NOT finished, 
 		// is current position one of exploring position ?
-		if (!this.isExplorationFinished) {
-			if (this.exploringPoints.remove(currentPosition)) {
-				if (this.exploringPoints.size() == 0) {
+		if (this.exploringPoints.remove(currentPosition)) {
+			if (this.exploringPoints.size() == 0) {
+				if (!this.isExplorationFinished) {
 					this.isExplorationFinished = true;
 					this.geneateOptimalExplorePoints();
-				}
-			}
-			
-			
-			///////////////
-			System.out.println("remain: "+this.exploringPoints.size());
-			
-		}
-		
-		// update task
-		if (this.task != null) {
-			if (this.task.isComplete()) {
-				this.task = null;
+				}	
+				this.exploringPoints = (ArrayList<Point>) this.optimalExploringPoints.clone();
 			}
 		}
-		
+
 		// update fuel
 		this.fuel = fuel;
 		
