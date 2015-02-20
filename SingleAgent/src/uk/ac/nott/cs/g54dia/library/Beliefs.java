@@ -124,13 +124,84 @@ public class Beliefs {
 	
 	private void geneateOptimalExplorePoints() {
 		
+		this.optimalExploringPoints.add(Tanker.FUEL_PUMP_LOCATION);
+		
+		ArrayList<Point> first = new ArrayList<Point>();
+		ArrayList<Point> second = new ArrayList<Point>();
+		ArrayList<Point> third = new ArrayList<Point>();
+		ArrayList<Point> fourth = new ArrayList<Point>();
+		
 		Iterator<Point> it = this.stations.iterator();
 		while (it.hasNext()) {
-			this.optimalExploringPoints.add(it.next());
+			Point point = it.next();
+			int x = point.x;
+			int y = point.y;
+			int point_x;
+			int point_y;
+				
+			if (x > 0 && y > 0) {
+				point_x = x - Tanker.VIEW_RANGE;
+				point_y = y - Tanker.VIEW_RANGE;
+				if (Math.sqrt(Math.pow(point_x, 2)+Math.pow(point_y, 2)) > Tanker.VIEW_RANGE ) {
+					second.add(new Point(point_x,point_y));
+				}
+			}
+			else if (x > 0 && y == 0) {
+				point_x = x - Tanker.VIEW_RANGE;
+				point_y = y;
+				if (Math.sqrt(Math.pow(point_x, 2)+Math.pow(point_y, 2)) > Tanker.VIEW_RANGE ) {
+					second.add(new Point(point_x,point_y));
+				}
+			}
+			else if (x > 0 && y < 0) {
+				point_x = x - Tanker.VIEW_RANGE;
+				point_y = y + Tanker.VIEW_RANGE;
+				if (Math.sqrt(Math.pow(point_x, 2)+Math.pow(point_y, 2)) > Tanker.VIEW_RANGE ) {
+					fourth.add(new Point(point_x,point_y));
+				}
+			}
+			else if (x == 0 && y > 0) {
+				point_x = x;
+				point_y = y - Tanker.VIEW_RANGE;
+				if (Math.sqrt(Math.pow(point_x, 2)+Math.pow(point_y, 2)) > Tanker.VIEW_RANGE ) {
+					first.add(new Point(point_x,point_y));
+				}
+			}
+			else if (x == 0 && y < 0) {
+				point_x = x;
+				point_y = y + Tanker.VIEW_RANGE;
+				if (Math.sqrt(Math.pow(point_x, 2)+Math.pow(point_y, 2)) > Tanker.VIEW_RANGE ) {
+					second.add(new Point(point_x,point_y));
+				}
+			}
+			else if (x < 0 && y > 0) {
+				point_x = x + Tanker.VIEW_RANGE;
+				point_y = y - Tanker.VIEW_RANGE;
+				if (Math.sqrt(Math.pow(point_x, 2)+Math.pow(point_y, 2)) > Tanker.VIEW_RANGE ) {
+					first.add(new Point(point_x,point_y));
+				}
+				
+			}
+			else if (x < 0 && y == 0) {
+				point_x = x + Tanker.VIEW_RANGE;
+				point_y = y;
+				if (Math.sqrt(Math.pow(point_x, 2)+Math.pow(point_y, 2)) > Tanker.VIEW_RANGE ) {
+					first.add(new Point(point_x,point_y));
+				}
+			}
+			else if (x < 0 && y < 0) {
+				point_x = x + Tanker.VIEW_RANGE;
+				point_y = y + Tanker.VIEW_RANGE;
+				if (Math.sqrt(Math.pow(point_x, 2)+Math.pow(point_y, 2)) > Tanker.VIEW_RANGE ) {
+					third.add(new Point(point_x,point_y));
+				}
+			}
 		}
 		
-		
-		//////////////////////////////////////////////////////////////////NOT GOOD!
+		this.optimalExploringPoints.addAll(first);
+		this.optimalExploringPoints.addAll(second);
+		this.optimalExploringPoints.addAll(third);
+		this.optimalExploringPoints.addAll(fourth);
 	}
 	
 	
@@ -167,7 +238,7 @@ public class Beliefs {
 		int dx = this.currentPosition.x - Tanker.FUEL_PUMP_LOCATION.x;
 		int dy = this.currentPosition.y - Tanker.FUEL_PUMP_LOCATION.y;
 		
-		if (this.fuel - Math.max(Math.abs(dx), Math.abs(dy)) > 5) {							// For safety   NOT GOOD
+		if (this.fuel - Math.max(Math.abs(dx), Math.abs(dy)) > 1) {
 			return true;
 		}
 		else {
@@ -454,7 +525,12 @@ public class Beliefs {
 				if (!this.isExplorationFinished) {
 					this.isExplorationFinished = true;
 					this.geneateOptimalExplorePoints();
-				}	
+				}
+				
+				
+				//////////////////////////
+				System.out.println("Finished Traverse !!!");
+				
 				this.exploringPoints = (ArrayList<Point>) this.optimalExploringPoints.clone();
 			}
 		}
