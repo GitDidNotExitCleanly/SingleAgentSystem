@@ -234,18 +234,6 @@ public class Beliefs {
 	
 	
 	// functions for field 'FUEL'
-	public boolean isFuelEnoughForReturn() {
-		int dx = this.currentPosition.x - Tanker.FUEL_PUMP_LOCATION.x;
-		int dy = this.currentPosition.y - Tanker.FUEL_PUMP_LOCATION.y;
-		
-		if (this.fuel - Math.max(Math.abs(dx), Math.abs(dy)) > 1) {
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
-	
 	public int getFuel() {
 		return this.fuel;
 	}
