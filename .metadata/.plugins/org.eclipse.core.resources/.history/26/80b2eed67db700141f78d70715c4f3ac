@@ -1,0 +1,12 @@
+package uk.ac.nott.cs.g54dia.demo;
+import uk.ac.nott.cs.g54dia.library.*;
+
+public class IntelligentTanker extends Tanker {
+
+	@Override
+	public Action senseAndAct(Cell[][] view, long timestep) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

@@ -1,0 +1,6 @@
+package uk.ac.nott.cs.g54dia.library;
+
+public interface Desire {
+
+	
+}

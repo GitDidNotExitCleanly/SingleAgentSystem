@@ -1,0 +1,25 @@
+package uk.ac.nott.cs.g54dia.library;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class SubMap {
+	
+	private boolean isFinished;
+	
+	private Map<Point,Cell> map;
+	
+	SubMap() {
+		this.isFinished = false;
+		this.map = new HashMap<Point,Cell>();
+	}
+	
+	// getter
+	public Map<Point,Cell> getMap() {
+		return this.map;
+	}
+	
+	public boolean isThisMapFinished() {
+		return this.isFinished;
+	}
+}

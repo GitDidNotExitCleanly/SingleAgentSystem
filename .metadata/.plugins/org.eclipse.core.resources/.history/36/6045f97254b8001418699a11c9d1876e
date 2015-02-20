@@ -1,0 +1,27 @@
+package uk.ac.nott.cs.g54dia.library;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class SubMap {
+	
+	private Map<Point,Cell> map;
+	
+	public SubMap() {
+		this.map = new HashMap<Point,Cell>();
+	}
+	
+	// getter
+	public Map<Point,Cell> getMap() {
+		return this.map;
+	}
+	
+	public boolean isThisMapFinished() {
+		if (this.map.size() < ((Tanker.MAX_FUEL/2)-5)*((Tanker.MAX_FUEL/2)-5)) {	// NEED ENVIRONMENT SIZE HERE
+			return false;
+		}
+		else {
+			return true;
+		}
+	}
+}

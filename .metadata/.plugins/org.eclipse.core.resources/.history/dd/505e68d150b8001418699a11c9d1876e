@@ -1,0 +1,35 @@
+package uk.ac.nott.cs.g54dia.library;
+
+import java.util.Stack;
+
+public class Desires {
+	
+	/*
+	 * Mission Code
+	 * 
+	 * 	FinshTask = 0
+	 * 	TraverseMap = 1
+	 * 
+	 */
+	
+	private Stack<Integer> desires;
+	
+	public Desires() {
+		this.desires = new Stack<Integer>();
+	}
+	
+	// functions
+	/**
+     * Get Current Goal
+     * @return Current Goal, 0 for FinshTask, 1 for TraverseMap.
+     */
+	public int getCurrentDesire() {
+		return this.desires.peek();
+	}
+	
+	/* @return update current desire code
+	 * */
+	public void updateDesires(int desireCode) {
+		this.desires.push(desireCode);
+	} 
+}

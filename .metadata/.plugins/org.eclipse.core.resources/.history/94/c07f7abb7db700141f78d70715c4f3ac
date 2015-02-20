@@ -1,0 +1,7 @@
+package uk.ac.nott.cs.g54dia.demo;
+
+import uk.ac.nott.cs.g54dia.library.Tanker;
+
+public class IntelligentTanker extends Tanker {
+
+}

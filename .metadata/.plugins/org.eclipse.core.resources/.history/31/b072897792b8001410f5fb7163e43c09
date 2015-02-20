@@ -1,0 +1,32 @@
+package uk.ac.nott.cs.g54dia.demo;
+import uk.ac.nott.cs.g54dia.library.*;
+
+public class IntelligentTanker extends Tanker {
+	
+	private Beliefs beliefs;
+	private Desires desires;
+	private Plans plans;
+	
+	public IntelligentTanker(int environmentSize) {
+		this.beliefs = new Beliefs(environmentSize);
+		this.desires = new Desires();
+		this.desires.updateDesires(1);
+		this.plans = new Plans();
+	}
+
+	@Override
+	public Action senseAndAct(Cell[][] view, long timestep) {
+		
+		this.beliefs.updateBeliefs(view,this.getFuelLevel(),this.getPosition());
+		
+		
+		
+		
+		
+		
+		
+		
+		return null;
+	}
+
+}

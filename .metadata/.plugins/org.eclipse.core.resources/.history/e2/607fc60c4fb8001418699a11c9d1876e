@@ -1,0 +1,26 @@
+package uk.ac.nott.cs.g54dia.library;
+
+public class Plans {
+	
+	public Plans() {}
+	
+	// functions
+	public void execute(int desire,Beliefs belief) {
+		switch (desire) {
+		case 0:
+			
+			
+			
+			
+			break;
+		case 1:
+			
+			
+			
+			
+			
+			
+			break;
+		}
+	}
+}
