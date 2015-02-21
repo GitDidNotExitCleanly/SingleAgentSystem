@@ -24,7 +24,7 @@ public class DemoSimulator {
      * Time for which execution pauses so that GUI can update.
      * Reducing this value causes the simulation to run faster.
      */
-	private static int DELAY = 10;		// 100 by default
+	private static int DELAY = 100;
 	
 	/**
 	 * Number of timesteps to execute
@@ -38,7 +38,7 @@ public class DemoSimulator {
        
         //Tanker t = new DemoTanker();
         
-        /*				My Robot				*/
+        /*				My Tanker				*/
         Tanker t = new IntelligentTanker((Tanker.MAX_FUEL/2)-5); 
       
         // Create a GUI window to show our tanker

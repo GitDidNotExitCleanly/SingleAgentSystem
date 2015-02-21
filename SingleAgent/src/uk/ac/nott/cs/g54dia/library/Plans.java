@@ -4,7 +4,11 @@ import java.util.ArrayList;
 
 public class Plans {
 	
-	public Plans() {}
+	private Task lastTask;
+	
+	public Plans() {
+		this.lastTask = null;
+	}
 	
 	// functions
 	public Action execute(Desires desires,Beliefs beliefs) {
@@ -34,20 +38,46 @@ public class Plans {
 				currentWater = beliefs.getWater();
 				currentPosition = beliefs.getCurrentPosition();
 
-				Task task;
+				Task task = null;
 				if (beliefs.getCurrentCell() instanceof Station && ((Station)beliefs.getCurrentCell()).getTask() != null) {
 					task = ((Station)beliefs.getCurrentCell()).getTask();
 				}
 				else {
-					task = beliefs.getTasks().get(0);
+					if (this.lastTask == null) {
+						task = beliefs.getTasks().get(0);
+					}
+					else {
+						if (this.lastTask.isComplete()) {
+							// by default
+							task = beliefs.getTasks().get(0);
+							
+							// neighborhood task of last task
+							Point lastWell = beliefs.getStationWellPair().get(this.lastTask.getStationPosition());
+							for (int i=0;i<beliefs.getTasks().size();i++) {
+								Task current = beliefs.getTasks().get(i);
+								if (beliefs.getStationWellPair().get(current.getStationPosition()).equals(lastWell)) {
+									task = current;
+									break;
+								}
+							}
+						}
+						else {
+							task = this.lastTask;
+						}
+					}
 				}
+				this.lastTask = task;
+				
 				target = task.getStationPosition();
 				well = beliefs.getStationWellPair().get(target);
 				
 				if (beliefs.getCurrentPosition().equals(target) && currentWater >= task.getRequired()) {
+					
 					result = new DeliverWaterAction(task);	
+					
 				}		
 				else {
+					
 					if (currentWater < task.getRequired()) {
 						// go to well
 						if (this.canTankerGoThere(currentFuel, currentPosition, well)) {
@@ -88,8 +118,9 @@ public class Plans {
 							}
 						}
 					}
+					
 				}
-
+				
 				break;
 			case TRAVERSE_MAP:
 
@@ -151,6 +182,4 @@ public class Plans {
 		
 		return destination;
 	}
-	
-	
 }

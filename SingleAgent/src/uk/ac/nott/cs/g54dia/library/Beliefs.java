@@ -338,8 +338,28 @@ public class Beliefs {
 					this.geneateOptimalExplorePoints();
 					this.generateStationWellPair();
 				}
-				this.exploringPoints = (ArrayList<Point>) this.optimalExploringPoints.clone();
+				
+				for (int i=0;i<this.optimalExploringPoints.size();i++) {
+					this.exploringPoints.add(this.optimalExploringPoints.get(i));
+				}
 			}
+		}
+		
+		// sort the tasks
+		if (this.isExplorationFinished) {
+			ArrayList<Task> optimalTasksList = new ArrayList<Task>();
+			ArrayList<Task> temp = new ArrayList<Task>();
+			while (this.tasks.size() != 0) {
+				Point well = this.bestWellForStation.get(this.tasks.get(0).getStationPosition());
+				temp.clear();
+				for (int i=0;i<this.tasks.size();i++) {
+					if (this.bestWellForStation.get(this.tasks.get(i).getStationPosition()).equals(well)) {
+						temp.add(this.tasks.remove(i));
+					}
+				}
+				optimalTasksList.addAll(temp);
+			}
+			this.tasks = optimalTasksList;
 		}
 
 		// update fuel
