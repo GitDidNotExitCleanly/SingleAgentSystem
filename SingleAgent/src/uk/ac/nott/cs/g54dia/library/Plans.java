@@ -34,13 +34,18 @@ public class Plans {
 				currentWater = beliefs.getWater();
 				currentPosition = beliefs.getCurrentPosition();
 
-				// Finish the task by order
-				Task task = beliefs.getTasks().get(0);
+				Task task;
+				if (beliefs.getCurrentCell() instanceof Station && ((Station)beliefs.getCurrentCell()).getTask() != null) {
+					task = ((Station)beliefs.getCurrentCell()).getTask();
+				}
+				else {
+					task = beliefs.getTasks().get(0);
+				}
 				target = task.getStationPosition();
 				well = beliefs.getStationWellPair().get(target);
-
+				
 				if (beliefs.getCurrentPosition().equals(target) && currentWater >= task.getRequired()) {
-					result = new DeliverWaterAction(task);
+					result = new DeliverWaterAction(task);	
 				}		
 				else {
 					if (currentWater < task.getRequired()) {
@@ -49,10 +54,16 @@ public class Plans {
 							result = new MoveTowardsAction(well);
 						}
 						else {
-							Point destination = this.makeGoodUseOfFuel(beliefs.getExploringPoints(), currentFuel, currentPosition);
-							result = new MoveTowardsAction(destination);
+							Point destination_well = this.makeGoodUseOfFuel(beliefs.getWells(), currentFuel, currentPosition);
+							if (destination_well.equals(Tanker.FUEL_PUMP_LOCATION)) {
+								
+								Point destination_explore = this.makeGoodUseOfFuel(beliefs.getExploringPoints(), currentFuel, currentPosition);
+								result = new MoveTowardsAction(destination_explore);
+							}
+							else {
+								result = new MoveTowardsAction(destination_well);
+							}
 						}
-
 					}
 					else {
 						// go to station
@@ -60,13 +71,24 @@ public class Plans {
 							result = new MoveTowardsAction(target);
 						}
 						else {
-							Point destination = this.makeGoodUseOfFuel(beliefs.getExploringPoints(), currentFuel, currentPosition);
-							result = new MoveTowardsAction(destination);
+							ArrayList<Point> alternatives = new ArrayList<Point>();
+							for (int i=0;i<beliefs.getTasks().size();i++) {
+								Task t = beliefs.getTasks().get(i);
+								if (currentWater >= t.getRequired()) {
+									alternatives.add(t.getStationPosition());
+								}
+							}
+							Point destination_station = this.makeGoodUseOfFuel(alternatives, currentFuel, currentPosition);
+							if (destination_station.equals(Tanker.FUEL_PUMP_LOCATION)) {
+								Point destination_explore = this.makeGoodUseOfFuel(beliefs.getExploringPoints(), currentFuel, currentPosition);
+								result = new MoveTowardsAction(destination_explore);			
+							}
+							else {
+								result = new MoveTowardsAction(destination_station);
+							}
 						}
 					}
 				}
-
-
 
 				break;
 			case TRAVERSE_MAP:
