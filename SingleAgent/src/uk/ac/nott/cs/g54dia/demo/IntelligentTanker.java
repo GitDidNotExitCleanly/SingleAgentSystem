@@ -10,7 +10,7 @@ public class IntelligentTanker extends Tanker {
 	public IntelligentTanker(int environmentSize) {
 		this.beliefs = new Beliefs(environmentSize);
 		this.desires = new Desires();
-		this.desires.addDesires(Goal.TRAVERSE_MAP);
+		this.desires.addDesires(Goal.NONE);
 		this.plans = new Plans();
 	}
 
@@ -25,13 +25,15 @@ public class IntelligentTanker extends Tanker {
 			this.desires.addDesires(Goal.TRAVERSE_MAP);
 		}
 		else if (this.desires.getCurrentDesire() == Goal.FINSH_TASK) {
-			if (this.beliefs.getTask() == null) {
+			if (this.beliefs.getTasks().size() == 0) {
 				this.desires.popDesires();
 			}
 		}
 		else {
-			if (this.beliefs.getTask() != null) {
-				//this.desires.addDesires(Goal.FINSH_TASK);
+			if (this.beliefs.getTasks().size() != 0) {
+				if (this.beliefs.isExplorationFinished()) {
+					this.desires.addDesires(Goal.FINSH_TASK);
+				}
 			}
 		}
 		
