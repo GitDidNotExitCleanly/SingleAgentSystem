@@ -174,8 +174,6 @@ public class Beliefs {
 		
 		if (WhetherReplan) {
 		
-			this.optimalExploringPoints.add(Tanker.FUEL_PUMP_LOCATION);
-			
 			ArrayList<Point> exFirst = new ArrayList<Point>();
 			ArrayList<Point> exSecond = new ArrayList<Point>();
 			ArrayList<Point> exThird = new ArrayList<Point>();
@@ -191,42 +189,42 @@ public class Beliefs {
 				if (x > 0 && y > 0) {
 					point_x = x - Tanker.VIEW_RANGE;
 					point_y = y - Tanker.VIEW_RANGE;
-					if (Math.sqrt(Math.pow(point_x, 2)+Math.pow(point_y, 2)) > Tanker.VIEW_RANGE ) {
+					if (Math.max(Math.abs(point_x), Math.abs(point_y)) > Tanker.VIEW_RANGE ) {
 						exSecond.add(new Point(point_x,point_y));
 					}
 				}
 				else if (x > 0 && y == 0) {
 					point_x = x - Tanker.VIEW_RANGE;
 					point_y = y;
-					if (Math.sqrt(Math.pow(point_x, 2)+Math.pow(point_y, 2)) > Tanker.VIEW_RANGE ) {
+					if (Math.max(Math.abs(point_x), Math.abs(point_y)) > Tanker.VIEW_RANGE ) {
 						exSecond.add(new Point(point_x,point_y));
 					}
 				}
 				else if (x > 0 && y < 0) {
 					point_x = x - Tanker.VIEW_RANGE;
 					point_y = y + Tanker.VIEW_RANGE;
-					if (Math.sqrt(Math.pow(point_x, 2)+Math.pow(point_y, 2)) > Tanker.VIEW_RANGE ) {
+					if (Math.max(Math.abs(point_x), Math.abs(point_y)) > Tanker.VIEW_RANGE ) {
 						exFourth.add(new Point(point_x,point_y));
 					}
 				}
 				else if (x == 0 && y > 0) {
 					point_x = x;
 					point_y = y - Tanker.VIEW_RANGE;
-					if (Math.sqrt(Math.pow(point_x, 2)+Math.pow(point_y, 2)) > Tanker.VIEW_RANGE ) {
+					if (Math.max(Math.abs(point_x), Math.abs(point_y)) > Tanker.VIEW_RANGE ) {
 						exFirst.add(new Point(point_x,point_y));
 					}
 				}
 				else if (x == 0 && y < 0) {
 					point_x = x;
 					point_y = y + Tanker.VIEW_RANGE;
-					if (Math.sqrt(Math.pow(point_x, 2)+Math.pow(point_y, 2)) > Tanker.VIEW_RANGE ) {
+					if (Math.max(Math.abs(point_x), Math.abs(point_y)) > Tanker.VIEW_RANGE ) {
 						exSecond.add(new Point(point_x,point_y));
 					}
 				}
 				else if (x < 0 && y > 0) {
 					point_x = x + Tanker.VIEW_RANGE;
 					point_y = y - Tanker.VIEW_RANGE;
-					if (Math.sqrt(Math.pow(point_x, 2)+Math.pow(point_y, 2)) > Tanker.VIEW_RANGE ) {
+					if (Math.max(Math.abs(point_x), Math.abs(point_y)) > Tanker.VIEW_RANGE ) {
 						exFirst.add(new Point(point_x,point_y));
 					}
 					
@@ -234,14 +232,14 @@ public class Beliefs {
 				else if (x < 0 && y == 0) {
 					point_x = x + Tanker.VIEW_RANGE;
 					point_y = y;
-					if (Math.sqrt(Math.pow(point_x, 2)+Math.pow(point_y, 2)) > Tanker.VIEW_RANGE ) {
+					if (Math.max(Math.abs(point_x), Math.abs(point_y)) > Tanker.VIEW_RANGE ) {
 						exFirst.add(new Point(point_x,point_y));
 					}
 				}
 				else if (x < 0 && y < 0) {
 					point_x = x + Tanker.VIEW_RANGE;
 					point_y = y + Tanker.VIEW_RANGE;
-					if (Math.sqrt(Math.pow(point_x, 2)+Math.pow(point_y, 2)) > Tanker.VIEW_RANGE ) {
+					if (Math.max(Math.abs(point_x), Math.abs(point_y)) > Tanker.VIEW_RANGE ) {
 						exThird.add(new Point(point_x,point_y));
 					}
 				}
