@@ -35,8 +35,6 @@ public class DemoSimulator {
         // Create an environment
         Environment env = new Environment((Tanker.MAX_FUEL/2)-5);
         // Create our tanker
-       
-        //Tanker t = new DemoTanker();
         
         /*				My Tanker				*/
         Tanker t = new IntelligentTanker((Tanker.MAX_FUEL/2)-5); 
