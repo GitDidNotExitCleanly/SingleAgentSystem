@@ -125,87 +125,6 @@ public class Beliefs {
 		}
 	}
 	
-	private void geneateOptimalExplorePoints() {
-		
-		this.optimalExploringPoints.add(Tanker.FUEL_PUMP_LOCATION);
-		
-		ArrayList<Point> exFirst = new ArrayList<Point>();
-		ArrayList<Point> exSecond = new ArrayList<Point>();
-		ArrayList<Point> exThird = new ArrayList<Point>();
-		ArrayList<Point> exFourth = new ArrayList<Point>();
-		
-		for (int i = 0;i<this.stations.size();i++) {
-			Point point = this.stations.get(i);
-			int x = point.x;
-			int y = point.y;
-			int point_x;
-			int point_y;
-				
-			if (x > 0 && y > 0) {
-				point_x = x - Tanker.VIEW_RANGE;
-				point_y = y - Tanker.VIEW_RANGE;
-				if (Math.sqrt(Math.pow(point_x, 2)+Math.pow(point_y, 2)) > Tanker.VIEW_RANGE ) {
-					exSecond.add(new Point(point_x,point_y));
-				}
-			}
-			else if (x > 0 && y == 0) {
-				point_x = x - Tanker.VIEW_RANGE;
-				point_y = y;
-				if (Math.sqrt(Math.pow(point_x, 2)+Math.pow(point_y, 2)) > Tanker.VIEW_RANGE ) {
-					exSecond.add(new Point(point_x,point_y));
-				}
-			}
-			else if (x > 0 && y < 0) {
-				point_x = x - Tanker.VIEW_RANGE;
-				point_y = y + Tanker.VIEW_RANGE;
-				if (Math.sqrt(Math.pow(point_x, 2)+Math.pow(point_y, 2)) > Tanker.VIEW_RANGE ) {
-					exFourth.add(new Point(point_x,point_y));
-				}
-			}
-			else if (x == 0 && y > 0) {
-				point_x = x;
-				point_y = y - Tanker.VIEW_RANGE;
-				if (Math.sqrt(Math.pow(point_x, 2)+Math.pow(point_y, 2)) > Tanker.VIEW_RANGE ) {
-					exFirst.add(new Point(point_x,point_y));
-				}
-			}
-			else if (x == 0 && y < 0) {
-				point_x = x;
-				point_y = y + Tanker.VIEW_RANGE;
-				if (Math.sqrt(Math.pow(point_x, 2)+Math.pow(point_y, 2)) > Tanker.VIEW_RANGE ) {
-					exSecond.add(new Point(point_x,point_y));
-				}
-			}
-			else if (x < 0 && y > 0) {
-				point_x = x + Tanker.VIEW_RANGE;
-				point_y = y - Tanker.VIEW_RANGE;
-				if (Math.sqrt(Math.pow(point_x, 2)+Math.pow(point_y, 2)) > Tanker.VIEW_RANGE ) {
-					exFirst.add(new Point(point_x,point_y));
-				}
-				
-			}
-			else if (x < 0 && y == 0) {
-				point_x = x + Tanker.VIEW_RANGE;
-				point_y = y;
-				if (Math.sqrt(Math.pow(point_x, 2)+Math.pow(point_y, 2)) > Tanker.VIEW_RANGE ) {
-					exFirst.add(new Point(point_x,point_y));
-				}
-			}
-			else if (x < 0 && y < 0) {
-				point_x = x + Tanker.VIEW_RANGE;
-				point_y = y + Tanker.VIEW_RANGE;
-				if (Math.sqrt(Math.pow(point_x, 2)+Math.pow(point_y, 2)) > Tanker.VIEW_RANGE ) {
-					exThird.add(new Point(point_x,point_y));
-				}
-			}
-		}
-		
-		this.optimalExploringPoints.addAll(exFirst);
-		this.optimalExploringPoints.addAll(exSecond);
-		this.optimalExploringPoints.addAll(exThird);
-		this.optimalExploringPoints.addAll(exFourth);
-	}
-	
 	private void generateStationWellPair() {
 		
 		for (int i=0;i<this.stations.size();i++) {
@@ -230,7 +149,116 @@ public class Beliefs {
 		
 	}
 	
+	private void generateOptimalTaskList() {
+		
+		if (this.isExplorationFinished) {
+			ArrayList<Task> optimalTasksList = new ArrayList<Task>();
+			ArrayList<Task> temp = new ArrayList<Task>();
+			while (this.tasks.size() != 0) {
+				Point well = this.bestWellForStation.get(this.tasks.get(0).getStationPosition());
+				temp.clear();
+				for (int i=0;i<this.tasks.size();i++) {
+					if (this.bestWellForStation.get(this.tasks.get(i).getStationPosition()).equals(well)) {
+						temp.add(this.tasks.remove(i));
+					}
+				}
+				optimalTasksList.addAll(temp);
+			}
+			this.tasks = optimalTasksList;
+		}
+		
+	}
 	
+	private void geneateOptimalExplorePoints(boolean WhetherReplan) {
+		
+		if (WhetherReplan) {
+		
+			this.optimalExploringPoints.add(Tanker.FUEL_PUMP_LOCATION);
+			
+			ArrayList<Point> exFirst = new ArrayList<Point>();
+			ArrayList<Point> exSecond = new ArrayList<Point>();
+			ArrayList<Point> exThird = new ArrayList<Point>();
+			ArrayList<Point> exFourth = new ArrayList<Point>();
+			
+			for (int i = 0;i<this.stations.size();i++) {
+				Point point = this.stations.get(i);
+				int x = point.x;
+				int y = point.y;
+				int point_x;
+				int point_y;
+					
+				if (x > 0 && y > 0) {
+					point_x = x - Tanker.VIEW_RANGE;
+					point_y = y - Tanker.VIEW_RANGE;
+					if (Math.sqrt(Math.pow(point_x, 2)+Math.pow(point_y, 2)) > Tanker.VIEW_RANGE ) {
+						exSecond.add(new Point(point_x,point_y));
+					}
+				}
+				else if (x > 0 && y == 0) {
+					point_x = x - Tanker.VIEW_RANGE;
+					point_y = y;
+					if (Math.sqrt(Math.pow(point_x, 2)+Math.pow(point_y, 2)) > Tanker.VIEW_RANGE ) {
+						exSecond.add(new Point(point_x,point_y));
+					}
+				}
+				else if (x > 0 && y < 0) {
+					point_x = x - Tanker.VIEW_RANGE;
+					point_y = y + Tanker.VIEW_RANGE;
+					if (Math.sqrt(Math.pow(point_x, 2)+Math.pow(point_y, 2)) > Tanker.VIEW_RANGE ) {
+						exFourth.add(new Point(point_x,point_y));
+					}
+				}
+				else if (x == 0 && y > 0) {
+					point_x = x;
+					point_y = y - Tanker.VIEW_RANGE;
+					if (Math.sqrt(Math.pow(point_x, 2)+Math.pow(point_y, 2)) > Tanker.VIEW_RANGE ) {
+						exFirst.add(new Point(point_x,point_y));
+					}
+				}
+				else if (x == 0 && y < 0) {
+					point_x = x;
+					point_y = y + Tanker.VIEW_RANGE;
+					if (Math.sqrt(Math.pow(point_x, 2)+Math.pow(point_y, 2)) > Tanker.VIEW_RANGE ) {
+						exSecond.add(new Point(point_x,point_y));
+					}
+				}
+				else if (x < 0 && y > 0) {
+					point_x = x + Tanker.VIEW_RANGE;
+					point_y = y - Tanker.VIEW_RANGE;
+					if (Math.sqrt(Math.pow(point_x, 2)+Math.pow(point_y, 2)) > Tanker.VIEW_RANGE ) {
+						exFirst.add(new Point(point_x,point_y));
+					}
+					
+				}
+				else if (x < 0 && y == 0) {
+					point_x = x + Tanker.VIEW_RANGE;
+					point_y = y;
+					if (Math.sqrt(Math.pow(point_x, 2)+Math.pow(point_y, 2)) > Tanker.VIEW_RANGE ) {
+						exFirst.add(new Point(point_x,point_y));
+					}
+				}
+				else if (x < 0 && y < 0) {
+					point_x = x + Tanker.VIEW_RANGE;
+					point_y = y + Tanker.VIEW_RANGE;
+					if (Math.sqrt(Math.pow(point_x, 2)+Math.pow(point_y, 2)) > Tanker.VIEW_RANGE ) {
+						exThird.add(new Point(point_x,point_y));
+					}
+				}
+			}
+		
+			this.optimalExploringPoints.addAll(exFirst);
+			this.optimalExploringPoints.addAll(exSecond);
+			this.optimalExploringPoints.addAll(exThird);
+			this.optimalExploringPoints.addAll(exFourth);
+		}
+		
+		for (int i=0;i<this.optimalExploringPoints.size();i++) {
+			this.exploringPoints.add(this.optimalExploringPoints.get(i));
+		}
+
+	}
+	
+
 	// functions for field ArrayList series
 	public ArrayList<Point> getStations() {
 		return this.stations;
@@ -318,6 +346,9 @@ public class Beliefs {
 							if (this.isExplorationFinished) {
 								if (this.stations.contains(task.getStationPosition())) {
 									this.tasks.add(task);
+
+									// replan the task list
+									this.generateOptimalTaskList();
 								}
 							}
 							else {
@@ -335,31 +366,13 @@ public class Beliefs {
 			if (this.exploringPoints.size() == 0) {
 				if (!this.isExplorationFinished) {
 					this.isExplorationFinished = true;
-					this.geneateOptimalExplorePoints();
 					this.generateStationWellPair();
+					this.geneateOptimalExplorePoints(true);
 				}
-				
-				for (int i=0;i<this.optimalExploringPoints.size();i++) {
-					this.exploringPoints.add(this.optimalExploringPoints.get(i));
+				else {
+					this.geneateOptimalExplorePoints(false);
 				}
 			}
-		}
-		
-		// sort the tasks
-		if (this.isExplorationFinished) {
-			ArrayList<Task> optimalTasksList = new ArrayList<Task>();
-			ArrayList<Task> temp = new ArrayList<Task>();
-			while (this.tasks.size() != 0) {
-				Point well = this.bestWellForStation.get(this.tasks.get(0).getStationPosition());
-				temp.clear();
-				for (int i=0;i<this.tasks.size();i++) {
-					if (this.bestWellForStation.get(this.tasks.get(i).getStationPosition()).equals(well)) {
-						temp.add(this.tasks.remove(i));
-					}
-				}
-				optimalTasksList.addAll(temp);
-			}
-			this.tasks = optimalTasksList;
 		}
 
 		// update fuel
