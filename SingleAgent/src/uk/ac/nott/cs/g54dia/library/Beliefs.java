@@ -164,6 +164,7 @@ public class Beliefs {
 				}
 				optimalTasksList.addAll(temp);
 			}
+			
 			this.tasks = optimalTasksList;
 		}
 		

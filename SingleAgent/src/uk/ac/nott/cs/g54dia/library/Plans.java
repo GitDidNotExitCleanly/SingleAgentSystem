@@ -50,16 +50,6 @@ public class Plans {
 						if (this.lastTask.isComplete()) {
 							// by default
 							task = beliefs.getTasks().get(0);
-							
-							// neighborhood task of last task
-							Point lastWell = beliefs.getStationWellPair().get(this.lastTask.getStationPosition());
-							for (int i=0;i<beliefs.getTasks().size();i++) {
-								Task current = beliefs.getTasks().get(i);
-								if (beliefs.getStationWellPair().get(current.getStationPosition()).equals(lastWell)) {
-									task = current;
-									break;
-								}
-							}
 						}
 						else {
 							task = this.lastTask;
