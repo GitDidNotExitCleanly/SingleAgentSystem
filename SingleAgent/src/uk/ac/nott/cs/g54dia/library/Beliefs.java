@@ -188,75 +188,123 @@ public class Beliefs {
 		
 		if (WhetherReplan) {
 		
-			this.optimalExploringPoints.add(Tanker.FUEL_PUMP_LOCATION);
+			ArrayList<Point> optimalPoints = new ArrayList<Point>();
+			// get max_X and min_X
+			int max_X = -1;
+			int min_X = -1;
+			for (int i=0;i<this.stations.size();i++) {
+				int x = this.stations.get(i).x;
+				if (i == 0) {
+					max_X = x;
+					min_X = x;
+				}
+				else {
+					if (x > max_X) {
+						max_X = x;
+					}
+					else if (x < min_X) {
+						min_X = x;
+					}
+				}
+			}
 			
+			// get max_Y and min_Y
+			int max_Y = -1;
+			int min_Y = -1;
+			for (int i=0;i<this.stations.size();i++) {
+				int y = this.stations.get(i).y;
+				if (i == 0) {
+					max_Y = y;
+					min_Y = y;
+				}
+				else {
+					if (y > max_Y) {
+						max_Y = y;
+					}
+					else if (y < min_Y) {
+						min_Y = y;
+					}
+				}
+			}
+			
+			int width;
+			if ((max_X-min_X)%(Tanker.VIEW_RANGE*2) != 0) {
+				width = (max_X-min_X)/(Tanker.VIEW_RANGE*2)+1;
+			}
+			else {
+				width = (max_X-min_X)/(Tanker.VIEW_RANGE*2);
+			}
+			
+			int height;
+			if ((max_Y-min_Y)%(Tanker.VIEW_RANGE*2) != 0) {
+				height = (max_Y-min_Y)/(Tanker.VIEW_RANGE*2)+1;
+			}
+			else {
+				height = (max_Y-min_Y)/(Tanker.VIEW_RANGE*2);
+			}
+			
+			for (int i=0;i<width;i++) {
+				for (int j=0;j<height;j++) {
+					for (int index = 0;index < this.stations.size();index++) {
+						if (this.stations.get(index).x >= min_X+i*Tanker.VIEW_RANGE*2
+						&& this.stations.get(index).x < min_X+(i+1)*Tanker.VIEW_RANGE*2
+						&& this.stations.get(index).y < max_Y-j*Tanker.VIEW_RANGE*2
+						&& this.stations.get(index).y >= max_Y-(j+1)*Tanker.VIEW_RANGE*2) {
+							optimalPoints.add(new Point((min_X+i*Tanker.VIEW_RANGE*2+min_X+(i+1)*Tanker.VIEW_RANGE*2)/2,(max_Y-j*Tanker.VIEW_RANGE*2+max_Y-(j+1)*Tanker.VIEW_RANGE*2)/2));
+							break;
+						}
+						else if (i == 0 && j == height-1) {
+							if (this.stations.get(index).x == min_X+(i+1)*Tanker.VIEW_RANGE*2
+								|| this.stations.get(index).y == max_Y-j*Tanker.VIEW_RANGE*2) {
+								optimalPoints.add(new Point((min_X+i*Tanker.VIEW_RANGE*2+min_X+(i+1)*Tanker.VIEW_RANGE*2)/2,(max_Y-j*Tanker.VIEW_RANGE*2+max_Y-(j+1)*Tanker.VIEW_RANGE*2)/2));
+								break;
+							}
+						}
+						else if (i == 0 && this.stations.get(index).y == max_Y-j*Tanker.VIEW_RANGE*2) {
+							optimalPoints.add(new Point((min_X+i*Tanker.VIEW_RANGE*2+min_X+(i+1)*Tanker.VIEW_RANGE*2)/2,(max_Y-j*Tanker.VIEW_RANGE*2+max_Y-(j+1)*Tanker.VIEW_RANGE*2)/2));
+							break;
+						}
+						else if (j == height-1 && this.stations.get(index).x == min_X+(i+1)*Tanker.VIEW_RANGE*2) {
+							optimalPoints.add(new Point((min_X+i*Tanker.VIEW_RANGE*2+min_X+(i+1)*Tanker.VIEW_RANGE*2)/2,(max_Y-j*Tanker.VIEW_RANGE*2+max_Y-(j+1)*Tanker.VIEW_RANGE*2)/2));
+							break;
+						}				
+					}
+				}
+			}
+	
 			ArrayList<Point> exFirst = new ArrayList<Point>();
 			ArrayList<Point> exSecond = new ArrayList<Point>();
 			ArrayList<Point> exThird = new ArrayList<Point>();
 			ArrayList<Point> exFourth = new ArrayList<Point>();
 			
-			for (int i = 0;i<this.stations.size();i++) {
-				Point point = this.stations.get(i);
+			for (int i = 0;i<optimalPoints.size();i++) {
+				Point point = optimalPoints.get(i);
 				int x = point.x;
 				int y = point.y;
-				int point_x;
-				int point_y;
-					
+				
 				if (x > 0 && y > 0) {
-					point_x = x - Tanker.VIEW_RANGE;
-					point_y = y - Tanker.VIEW_RANGE;
-					if (Math.max(Math.abs(point_x), Math.abs(point_y)) > Tanker.VIEW_RANGE ) {
-						exSecond.add(new Point(point_x,point_y));
-					}
+					exSecond.add(new Point(x,y));
 				}
 				else if (x > 0 && y == 0) {
-					point_x = x - Tanker.VIEW_RANGE;
-					point_y = y;
-					if (Math.max(Math.abs(point_x), Math.abs(point_y)) > Tanker.VIEW_RANGE ) {
-						exSecond.add(new Point(point_x,point_y));
-					}
+					exSecond.add(new Point(x,y));
 				}
 				else if (x > 0 && y < 0) {
-					point_x = x - Tanker.VIEW_RANGE;
-					point_y = y + Tanker.VIEW_RANGE;
-					if (Math.max(Math.abs(point_x), Math.abs(point_y)) > Tanker.VIEW_RANGE ) {
-						exFourth.add(new Point(point_x,point_y));
-					}
+					exFourth.add(new Point(x,y));
 				}
 				else if (x == 0 && y > 0) {
-					point_x = x;
-					point_y = y - Tanker.VIEW_RANGE;
-					if (Math.max(Math.abs(point_x), Math.abs(point_y)) > Tanker.VIEW_RANGE ) {
-						exFirst.add(new Point(point_x,point_y));
-					}
+					exFirst.add(new Point(x,y));
 				}
 				else if (x == 0 && y < 0) {
-					point_x = x;
-					point_y = y + Tanker.VIEW_RANGE;
-					if (Math.max(Math.abs(point_x), Math.abs(point_y)) > Tanker.VIEW_RANGE ) {
-						exSecond.add(new Point(point_x,point_y));
-					}
+					exSecond.add(new Point(x,y));
 				}
 				else if (x < 0 && y > 0) {
-					point_x = x + Tanker.VIEW_RANGE;
-					point_y = y - Tanker.VIEW_RANGE;
-					if (Math.max(Math.abs(point_x), Math.abs(point_y)) > Tanker.VIEW_RANGE ) {
-						exFirst.add(new Point(point_x,point_y));
-					}
+					exFirst.add(new Point(x,y));
 				}
 				else if (x < 0 && y == 0) {
-					point_x = x + Tanker.VIEW_RANGE;
-					point_y = y;
-					if (Math.max(Math.abs(point_x), Math.abs(point_y)) > Tanker.VIEW_RANGE ) {
-						exFirst.add(new Point(point_x,point_y));
-					}
+					exFirst.add(new Point(x,y));
 				}
 				else if (x < 0 && y < 0) {
-					point_x = x + Tanker.VIEW_RANGE;
-					point_y = y + Tanker.VIEW_RANGE;
-					if (Math.max(Math.abs(point_x), Math.abs(point_y)) > Tanker.VIEW_RANGE ) {
-						exThird.add(new Point(point_x,point_y));
-					}
+					exThird.add(new Point(x,y));
 				}
 			}
 			
@@ -273,10 +321,11 @@ public class Beliefs {
 				}
 			});
 			
+			this.optimalExploringPoints.add(Tanker.FUEL_PUMP_LOCATION);
 			for (int i=0;i<4;i++) {
 				this.optimalExploringPoints.addAll(tensity.get(i));
 			}
-			
+	
 		}
 		
 		for (int i=0;i<this.optimalExploringPoints.size();i++) {
