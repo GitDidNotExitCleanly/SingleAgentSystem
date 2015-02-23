@@ -1,6 +1,7 @@
 package uk.ac.nott.cs.g54dia.library;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 
 public class Beliefs {
@@ -35,7 +36,7 @@ public class Beliefs {
 				
 		// initialize task
 		this.tasks = new ArrayList<Task>();
-		
+
 		// initialize fuel
 		this.fuel = Tanker.MAX_FUEL;
 		
@@ -151,22 +152,35 @@ public class Beliefs {
 	
 	private void generateOptimalTaskList() {
 		
-		if (this.isExplorationFinished) {
-			ArrayList<Task> optimalTasksList = new ArrayList<Task>();
-			ArrayList<Task> temp = new ArrayList<Task>();
-			while (this.tasks.size() != 0) {
-				Point well = this.bestWellForStation.get(this.tasks.get(0).getStationPosition());
-				temp.clear();
-				for (int i=0;i<this.tasks.size();i++) {
-					if (this.bestWellForStation.get(this.tasks.get(i).getStationPosition()).equals(well)) {
-						temp.add(this.tasks.remove(i));
-					}
-				}
-				optimalTasksList.addAll(temp);
-			}
-			
-			this.tasks = optimalTasksList;
+		// group all task with same well
+		ArrayList<ArrayList<Task>> optimalTasksList = new ArrayList<ArrayList<Task>>();
+		ArrayList<Task> tasksCopy = new ArrayList<Task>();
+		for (int i=0;i<this.tasks.size();i++) {
+			tasksCopy.add(this.tasks.get(i));
 		}
+		while (tasksCopy.size() != 0) {
+			Point well = this.bestWellForStation.get(tasksCopy.get(0).getStationPosition());
+			ArrayList<Task> temp = new ArrayList<Task>();
+			for (int i=0;i<tasksCopy.size();i++) {
+				if (this.bestWellForStation.get(tasksCopy.get(i).getStationPosition()).equals(well)) {
+					temp.add(tasksCopy.remove(i));
+				}
+			}
+			optimalTasksList.add(temp);
+		}
+		
+		// tensity of tasks with the same nearest well
+		optimalTasksList.sort(new Comparator<ArrayList<Task>>() {
+			@Override
+			public int compare(ArrayList<Task> l1,ArrayList<Task> l2) {
+				return l2.size() - l1.size();
+			}
+		});
+		
+		for (int i=0;i<optimalTasksList.size();i++) {
+			tasksCopy.addAll(optimalTasksList.get(i));
+		}
+		this.tasks = tasksCopy;
 		
 	}
 	
@@ -174,6 +188,8 @@ public class Beliefs {
 		
 		if (WhetherReplan) {
 		
+			this.optimalExploringPoints.add(Tanker.FUEL_PUMP_LOCATION);
+			
 			ArrayList<Point> exFirst = new ArrayList<Point>();
 			ArrayList<Point> exSecond = new ArrayList<Point>();
 			ArrayList<Point> exThird = new ArrayList<Point>();
@@ -227,7 +243,6 @@ public class Beliefs {
 					if (Math.max(Math.abs(point_x), Math.abs(point_y)) > Tanker.VIEW_RANGE ) {
 						exFirst.add(new Point(point_x,point_y));
 					}
-					
 				}
 				else if (x < 0 && y == 0) {
 					point_x = x + Tanker.VIEW_RANGE;
@@ -244,11 +259,24 @@ public class Beliefs {
 					}
 				}
 			}
-		
-			this.optimalExploringPoints.addAll(exFirst);
-			this.optimalExploringPoints.addAll(exSecond);
-			this.optimalExploringPoints.addAll(exThird);
-			this.optimalExploringPoints.addAll(exFourth);
+			
+			// point tensity of one area
+			ArrayList<ArrayList<Point>> tensity = new ArrayList<ArrayList<Point>>();
+			tensity.add(exFirst);
+			tensity.add(exSecond);
+			tensity.add(exThird);
+			tensity.add(exFourth);
+			tensity.sort(new Comparator<ArrayList<Point>>() {
+				@Override
+				public int compare(ArrayList<Point> arr1,ArrayList<Point> arr2) {
+					return arr1.size()-arr2.size();
+				}
+			});
+			
+			for (int i=0;i<4;i++) {
+				this.optimalExploringPoints.addAll(tensity.get(i));
+			}
+			
 		}
 		
 		for (int i=0;i<this.optimalExploringPoints.size();i++) {

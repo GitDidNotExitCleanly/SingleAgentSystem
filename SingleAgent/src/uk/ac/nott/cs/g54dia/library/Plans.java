@@ -38,7 +38,7 @@ public class Plans {
 				currentWater = beliefs.getWater();
 				currentPosition = beliefs.getCurrentPosition();
 
-				Task task = null;
+				Task task;
 				if (beliefs.getCurrentCell() instanceof Station && ((Station)beliefs.getCurrentCell()).getTask() != null) {
 					task = ((Station)beliefs.getCurrentCell()).getTask();
 				}
@@ -77,8 +77,21 @@ public class Plans {
 							Point destination_well = this.makeGoodUseOfFuel(beliefs.getWells(), currentFuel, currentPosition);
 							if (destination_well.equals(Tanker.FUEL_PUMP_LOCATION)) {
 								
-								Point destination_explore = this.makeGoodUseOfFuel(beliefs.getExploringPoints(), currentFuel, currentPosition);
-								result = new MoveTowardsAction(destination_explore);
+								ArrayList<Point> alternatives = new ArrayList<Point>();
+								for (int i=0;i<beliefs.getTasks().size();i++) {
+									Task t = beliefs.getTasks().get(i);
+									if (currentWater >= t.getRequired()) {
+										alternatives.add(t.getStationPosition());
+									}
+								}
+								Point destination_station = this.makeGoodUseOfFuel(alternatives, currentFuel, currentPosition);
+								if (destination_station.equals(Tanker.FUEL_PUMP_LOCATION)) {
+									Point destination_explore = this.makeGoodUseOfFuel(beliefs.getExploringPoints(), currentFuel, currentPosition);
+									result = new MoveTowardsAction(destination_explore);			
+								}
+								else {
+									result = new MoveTowardsAction(destination_station);
+								}
 							}
 							else {
 								result = new MoveTowardsAction(destination_well);
