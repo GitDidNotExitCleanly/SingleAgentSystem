@@ -56,8 +56,8 @@ public class Beliefs {
 	
 	private void generateExplorePoints(int environmentSize) {
 		
-		int valueSize = (environmentSize-Tanker.VIEW_RANGE)/(Tanker.VIEW_RANGE*2);
-		int remaining = (environmentSize-Tanker.VIEW_RANGE)%(Tanker.VIEW_RANGE*2);
+		int valueSize = (environmentSize-Tanker.VIEW_RANGE)/(Tanker.VIEW_RANGE*2+1);
+		int remaining = (environmentSize-Tanker.VIEW_RANGE)%(Tanker.VIEW_RANGE*2+1);
 		int[] value;
 		if (remaining != 0) {
 			value = new int[(valueSize+1)*2+1];
@@ -78,10 +78,10 @@ public class Beliefs {
 			}
 			else {
 				if (i%2 != 0) {
-					value[((value.length-1)/2)+((i+1)/2)] = ((i+1)/2)*Tanker.VIEW_RANGE*2;
+					value[((value.length-1)/2)+((i+1)/2)] = ((i+1)/2)*(Tanker.VIEW_RANGE*2+1);
 				}
 				else {
-					value[((value.length-1)/2)-(i/2)] = -(i/2)*Tanker.VIEW_RANGE*2;
+					value[((value.length-1)/2)-(i/2)] = -(i/2)*(Tanker.VIEW_RANGE*2+1);
 				}
 			}
 		}
@@ -228,19 +228,19 @@ public class Beliefs {
 			}
 			
 			int width;
-			if ((max_X-min_X)%(Tanker.VIEW_RANGE*2) != 0) {
-				width = (max_X-min_X)/(Tanker.VIEW_RANGE*2)+1;
+			if ((max_X-min_X+1)%(Tanker.VIEW_RANGE*2+1) != 0) {
+				width = (max_X-min_X+1)/(Tanker.VIEW_RANGE*2+1)+1;
 			}
 			else {
-				width = (max_X-min_X)/(Tanker.VIEW_RANGE*2);
+				width = (max_X-min_X+1)/(Tanker.VIEW_RANGE*2+1);
 			}
 			
 			int height;
-			if ((max_Y-min_Y)%(Tanker.VIEW_RANGE*2) != 0) {
-				height = (max_Y-min_Y)/(Tanker.VIEW_RANGE*2)+1;
+			if ((max_Y-min_Y+1)%(Tanker.VIEW_RANGE*2+1) != 0) {
+				height = (max_Y-min_Y+1)/(Tanker.VIEW_RANGE*2+1)+1;
 			}
 			else {
-				height = (max_Y-min_Y)/(Tanker.VIEW_RANGE*2);
+				height = (max_Y-min_Y+1)/(Tanker.VIEW_RANGE*2+1);
 			}
 			
 			for (int i=0;i<width;i++) {
