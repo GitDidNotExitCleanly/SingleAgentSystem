@@ -18,7 +18,7 @@ public class IntelligentTanker extends Tanker {
 	public Action senseAndAct(Cell[][] view, long timestep) {
 		
 		// update beliefs
-		this.beliefs.updateBeliefs(view,this.getFuelLevel(),this.getWaterLevel(),this.getPosition(),this.getCurrentCell(view));
+		this.beliefs.updateBeliefs(view,this.getFuelLevel(),this.getWaterLevel(),this.getCurrentCell(view));
 		
 		// update desires
 		if (this.desires.getCurrentDesire() == Goal.NONE) {
